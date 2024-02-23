@@ -1,0 +1,20 @@
+#include<stdio.h>
+int findlargest(int arr[],int size)
+{
+	if(size == 1)
+	return arr[0];
+	int max = findlargest(arr,size-1);
+	if(arr[size-1]>max)
+	return arr[size-1];
+	else
+	return max;
+}
+int main()
+{
+	int arr[]={10,84,73,01,100,9};
+	int size=sizeof(arr)/sizeof(arr[0]);
+	int largest=findlargest(arr,size);
+	printf("the largest element in the array is:%d\n",largest);
+	return 0;
+	
+}
