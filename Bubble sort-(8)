@@ -1,0 +1,63 @@
+#include <stdio.h>
+#include <stdlib.h>
+int** allocateMatrix(int rows, int cols) {
+    int** matrix = (int**)malloc(rows * sizeof(int*));
+    for (int i = 0; i < rows; i++) {
+        matrix[i] = (int*)malloc(cols * sizeof(int));
+    }
+    return matrix;
+}
+void freeMatrix(int** matrix, int rows) {
+    for (int i = 0; i < rows; i++) {
+        free(matrix[i]);
+    }
+    free(matrix);
+}
+void matrixMultiply(int** A, int** B, int** C, int rowA, int colA, int rowB, int colB, int rowC, int colC, int n) {
+    if (n == 1) {
+        C[rowC][colC] += A[rowA][colA] * B[rowB][colB];
+    } else {
+        int newSize = n / 2;
+        matrixMultiply(A, B, C, rowA, colA, rowB, colB, rowC, colC, newSize);
+        matrixMultiply(A, B, C, rowA, colA + newSize, rowB + newSize, colB, rowC, colC, newSize);
+        matrixMultiply(A, B, C, rowA, colA, rowB, colB + newSize, rowC, colC + newSize, newSize);
+        matrixMultiply(A, B, C, rowA, colA + newSize, rowB + newSize, colB + newSize, rowC, colC + newSize, newSize);
+        matrixMultiply(A, B, C, rowA + newSize, colA, rowB, colB, rowC + newSize, colC, newSize);
+        matrixMultiply(A, B, C, rowA + newSize, colA + newSize, rowB + newSize, colB, rowC + newSize, colC, newSize);
+        matrixMultiply(A, B, C, rowA + newSize, colA, rowB, colB + newSize, rowC + newSize, colC + newSize, newSize);
+        matrixMultiply(A, B, C, rowA + newSize, colA + newSize, rowB + newSize, colB + newSize, rowC + newSize, colC + newSize, newSize);
+    }
+}
+int main() {
+    int n;
+    printf("Enter the size of the square matrices: ");
+    scanf("%d", &n);
+    int** A = allocateMatrix(n, n);
+    int** B = allocateMatrix(n, n);
+    int** C = allocateMatrix(n, n);
+    printf("Enter elements of matrix A:\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            scanf("%d", &A[i][j]);
+        }
+    }
+    printf("Enter elements of matrix B:\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            scanf("%d", &B[i][j]);
+        }
+    }
+    matrixMultiply(A, B, C, 0, 0, 0, 0, 0, 0, n);
+    printf("Resultant matrix C:\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            printf("%d ", C[i][j]);
+        }
+        printf("\n");
+    }
+    freeMatrix(A, n);
+    freeMatrix(B, n);
+    freeMatrix(C, n);
+
+    return 0;
+}
