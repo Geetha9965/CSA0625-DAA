@@ -1,0 +1,25 @@
+#include <stdio.h>
+void findMinMaxSequence(int arr[], int n) {
+    int minSeq = arr[0], maxSeq = arr[0];
+    int currMin = arr[0], currMax = arr[0];
+
+    for (int i = 1; i < n; i++) {
+        currMin = (arr[i] < currMin + arr[i]) ? arr[i] : currMin + arr[i];
+        currMax = (arr[i] > currMax + arr[i]) ? arr[i] : currMax + arr[i];
+        
+        if (currMin < minSeq) {
+            minSeq = currMin;
+        }     
+        if (currMax > maxSeq) {
+            maxSeq = currMax;
+        }
+    }    
+    printf("Minimum value sequence: %d\n", minSeq);
+    printf("Maximum value sequence: %d\n", maxSeq);
+}
+int main() {
+    int arr[] = {1, -2, 3, -4, 5};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    findMinMaxSequence(arr, n);    
+    return 0;
+}
