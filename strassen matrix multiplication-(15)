@@ -1,0 +1,153 @@
+#include <stdio.h>
+#include <stdlib.h>
+void strassenMultiply(int **A, int **B, int **C, int n) {
+    if (n == 1) {
+        C[0][0] = A[0][0] * B[0][0];
+        return;
+    }
+
+    int **A11, **A12, **A21, **A22;
+    int **B11, **B12, **B21, **B22;
+    int **C11, **C12, **C21, **C22;
+    int i, j;
+    A11 = (int **)malloc(n/2 * sizeof(int *));
+    A12 = (int **)malloc(n/2 * sizeof(int *));
+    A21 = (int **)malloc(n/2 * sizeof(int *));
+    A22 = (int **)malloc(n/2 * sizeof(int *));
+    B11 = (int **)malloc(n/2 * sizeof(int *));
+    B12 = (int **)malloc(n/2 * sizeof(int *));
+    B21 = (int **)malloc(n/2 * sizeof(int *));
+    B22 = (int **)malloc(n/2 * sizeof(int *));
+    C11 = (int **)malloc(n/2 * sizeof(int *));
+    C12 = (int **)malloc(n/2 * sizeof(int *));
+    C21 = (int **)malloc(n/2 * sizeof(int *));
+    C22 = (int **)malloc(n/2 * sizeof(int *));
+
+    for (i = 0; i < n/2; i++) {
+        A11[i] = (int *)malloc(n/2 * sizeof(int));
+        A12[i] = (int *)malloc(n/2 * sizeof(int));
+        A21[i] = (int *)malloc(n/2 * sizeof(int));
+        A22[i] = (int *)malloc(n/2 * sizeof(int));
+        B11[i] = (int *)malloc(n/2 * sizeof(int));
+        B12[i] = (int *)malloc(n/2 * sizeof(int));
+        B21[i] = (int *)malloc(n/2 * sizeof(int));
+        B22[i] = (int *)malloc(n/2 * sizeof(int));
+        C11[i] = (int *)malloc(n/2 * sizeof(int));
+        C12[i] = (int *)malloc(n/2 * sizeof(int));
+        C21[i] = (int *)malloc(n/2 * sizeof(int));
+        C22[i] = (int *)malloc(n/2 * sizeof(int));
+    }
+    for (i = 0; i < n/2; i++) {
+        for (j = 0; j < n/2; j++) {
+            A11[i][j] = A[i][j];
+            A12[i][j] = A[i][j + n/2];
+            A21[i][j] = A[i + n/2][j];
+            A22[i][j] = A[i + n/2][j + n/2];
+
+            B11[i][j] = B[i][j];
+            B12[i][j] = B[i][j + n/2];
+            B21[i][j] = B[i + n/2][j];
+            B22[i][j] = B[i + n/2][j + n/2];
+        }
+    }
+    int **M1, **M2, **M3, **M4, **M5, **M6, **M7;
+    M1 = (int **)malloc(n/2 * sizeof(int *));
+    M2 = (int **)malloc(n/2 * sizeof(int *));
+    M3 = (int **)malloc(n/2 * sizeof(int *));
+    M4 = (int **)malloc(n/2 * sizeof(int *));
+    M5 = (int **)malloc(n/2 * sizeof(int *));
+    M6 = (int **)malloc(n/2 * sizeof(int *));
+    M7 = (int **)malloc(n/2 * sizeof(int *));
+    for (i = 0; i < n/2; i++) {
+        M1[i] = (int *)malloc(n/2 * sizeof(int));
+        M2[i] = (int *)malloc(n/2 * sizeof(int));
+        M3[i] = (int *)malloc(n/2 * sizeof(int));
+        M4[i] = (int *)malloc(n/2 * sizeof(int));
+        M5[i] = (int *)malloc(n/2 * sizeof(int));
+        M6[i] = (int *)malloc(n/2 * sizeof(int));
+        M7[i] = (int *)malloc(n/2 * sizeof(int));
+    }
+    strassenMultiply(A11, B11, M1, n/2);
+    strassenMultiply(A12, B21, M2, n/2);
+    strassenMultiply(A11, B12, M3, n/2);
+    strassenMultiply(A12, B22, M4, n/2);
+    strassenMultiply(A21, B11, M5, n/2);
+    strassenMultiply(A22, B21, M6, n/2);
+    strassenMultiply(A21, B12, M7, n/2);
+    for (i = 0; i < n/2; i++) {
+        for (j = 0; j < n/2; j++) {
+            C11[i][j] = M1[i][j] + M2[i][j];
+            C12[i][j] = M3[i][j] + M4[i][j];
+            C21[i][j] = M5[i][j] + M6[i][j];
+            C22[i][j] = M1[i][j] + M4[i][j] - M2[i][j] + M7[i][j];
+        }
+    }
+    for (i = 0; i < n/2; i++) {
+        for (j = 0; j < n/2; j++) {
+            C[i][j] = C11[i][j];
+            C[i][j + n/2] = C12[i][j];
+            C[i + n/2][j] = C21[i][j];
+            C[i + n/2][j + n/2] = C22[i][j];
+        }
+    }
+    for (i = 0; i < n/2; i++) {
+        free(A11[i]); free(A12[i]); free(A21[i]); free(A22[i]);
+        free(B11[i]); free(B12[i]); free(B21[i]); free(B22[i]);
+        free(C11[i]); free(C12[i]); free(C21[i]); free(C22[i]);
+        free(M1[i]); free(M2[i]); free(M3[i]); free(M4[i]);
+        free(M5[i]); free(M6[i]); free(M7[i]);
+    }
+    free(A11); free(A12); free(A21); free(A22);
+    free(B11); free(B12); free(B21); free(B22);
+    free(C11); free(C12); free(C21); free(C22);
+    free(M1); free(M2); free(M3); free(M4); free(M5); free(M6); free(M7);
+}
+
+void printMatrix(int **matrix, int n) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            printf("%d ", matrix[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+int main() {
+    int n = 2; 
+    int **A, **B, **C;
+    int i, j;
+    A = (int **)malloc(n * sizeof(int *));
+    B = (int **)malloc(n * sizeof(int *));
+    C = (int **)malloc(n * sizeof(int *));
+    for (i = 0; i < n; i++) {
+        A[i] = (int *)malloc(n * sizeof(int));
+        B[i] = (int *)malloc(n * sizeof(int));
+        C[i] = (int *)malloc(n * sizeof(int));
+    }
+    printf("Enter values for matrix A:\n");
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < n; j++) {
+            scanf("%d", &A[i][j]);
+        }
+    }
+
+    printf("Enter values for matrix B:\n");
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < n; j++) {
+            scanf("%d", &B[i][j]);
+        }
+    }
+    strassenMultiply(A, B, C, n);
+    printf("Resultant matrix C:\n");
+    printMatrix(C, n);
+    for (i = 0; i < n; i++) {
+        free(A[i]);
+        free(B[i]);
+        free(C[i]);
+    }
+    free(A);
+    free(B);
+    free(C);
+
+    return 0;
+}
