@@ -1,0 +1,41 @@
+#include <stdio.h>
+
+float knapsackGreedy(float weights[], float values[], float capacity, int n) {
+    float ratio[n];
+
+    for (int i = 0; i < n; i++) {
+        ratio[i] = values[i] / weights[i];
+    }
+
+    float totalValue = 0;
+
+    for (int i = 0; i < n && capacity > 0; i++) {
+        int maxIndex = 0;
+
+        for (int j = 1; j < n; j++) {
+            if (ratio[j] > ratio[maxIndex]) {
+                maxIndex = j;
+            }
+        }
+
+        float amount = (weights[maxIndex] < capacity) ? weights[maxIndex] : capacity;
+        totalValue += amount * ratio[maxIndex];
+        capacity -= amount;
+        ratio[maxIndex] = -1;
+    }
+
+    return totalValue;
+}
+
+int main() {
+    float weights[] = {10, 20, 30};
+    float values[] = {60, 100, 120};
+    float capacity = 50;
+    int n = sizeof(weights) / sizeof(weights[0]);
+
+    float maxValue = knapsackGreedy(weights, values, capacity, n);
+
+    printf("Maximum value that can be obtained using greedy knapsack approach: %.2f\n", maxValue);
+
+    return 0;
+}
