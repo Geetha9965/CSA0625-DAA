@@ -1,0 +1,34 @@
+#include <stdio.h>
+#define MAX_CONTAINERS 100
+#define MAX_CAPACITY 1000
+int maxContainers(int containers[], int n, int capacity) {
+    int dp[MAX_CAPACITY + 1] = {0};
+    for (int i = 0; i < n; i++) {
+        for (int j = capacity; j >= containers[i]; j--) {
+            if (dp[j - containers[i]] + 1 > dp[j]) {
+                dp[j] = dp[j - containers[i]] + 1;
+            }
+        }
+    }
+    return dp[capacity];
+}
+int main() {
+    int containers[MAX_CONTAINERS];
+    int n, capacity;
+
+    printf("Enter the number of containers: ");
+    scanf("%d", &n);
+
+    printf("Enter the capacity of the ship: ");
+    scanf("%d", &capacity);
+
+    printf("Enter the sizes of containers:\n");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &containers[i]);
+    }
+
+    int maxLoaded = maxContainers(containers, n, capacity);
+    printf("Maximum number of containers loaded: %d\n", maxLoaded);
+
+    return 0;
+}
